@@ -22,8 +22,8 @@ class TabHistory
     @subscribe @paneView, 'pane:item-added', @onItemAdded.bind(@)
     @subscribe @paneView, 'pane:item-removed', @onItemRemoved.bind(@)
 
-    atom.workspaceView.command "tab-history:previous", @previous.bind(@)
-    atom.workspaceView.command "tab-history:next", @next.bind(@)
+    atom.commands.add 'atom-workspace', "tab-history:previous", @previous.bind(@)
+    atom.commands.add 'atom-workspace', "tab-history:next", @next.bind(@)
 
     @items = @pane.items.slice().reverse()
     @pushActiveItem()
@@ -48,7 +48,7 @@ class TabHistory
     return unless (item in @pane.items)
     return if @isSwitching
     @pushActiveItem()
-    
+
   storeItems: ->
     @previousItems = @items.slice()
 
@@ -66,13 +66,13 @@ class TabHistory
 
   onItemRemoved: (event, item) ->
     return unless (item in @items)
-    
+
     # focus most recent tab if active tab was closed
     @items = @previousItems
     @previousItems = null
     if @items.length > 2 && @items[@items.length - 1] == item
       @pane.activateItem(@items[@items.length - 2])
-      
+
     @removePane(item)
     @storeItems()
 
